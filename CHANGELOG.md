@@ -1,5 +1,9 @@
 ## Unreleased
 
+## 1.7.3+3
+
+* context variable reintroduction in plugin file for Flutter 3.0.1
+
 ## 1.7.3+2
 
 * Revert native crash reporting support for iOS (restores 1.7.2) (#99)
