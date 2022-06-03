@@ -30,31 +30,13 @@ import com.datadog.android.rum.RumResourceKind
 public class DatadogFlutterPlugin: FlutterPlugin, MethodCallHandler {
   private var loggers = mutableMapOf<String, Logger>()
   private var traces = mutableMapOf<String, Span>()
+  private lateinit var context : Context
+  private lateinit var channel : MethodChannel
 
   override fun onAttachedToEngine(@NonNull flutterPluginBinding: FlutterPlugin.FlutterPluginBinding) {
-    context = flutterPluginBinding.getApplicationContext()
-    val channel = MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), "plugins.greenbits.com/datadog_flutter")
-    channel.setMethodCallHandler(DatadogFlutterPlugin());
-  }
-
-  // This static function is optional and equivalent to onAttachedToEngine. It supports the old
-  // pre-Flutter-1.12 Android projects. You are encouraged to continue supporting
-  // plugin registration via this function while apps migrate to use the new Android APIs
-  // post-flutter-1.12 via https://flutter.dev/go/android-project-migration.
-  //
-  // It is encouraged to share logic between onAttachedToEngine and registerWith to keep
-  // them functionally equivalent. Only one of onAttachedToEngine or registerWith will be called
-  // depending on the user's project. onAttachedToEngine or registerWith must both be defined
-  // in the same class.
-  companion object {
-    @JvmStatic lateinit var context : Context
-
-    @JvmStatic
-    fun registerWith(registrar: Registrar) {
-      context = registrar.activity().getApplication()
-      val channel = MethodChannel(registrar.messenger(), "plugins.greenbits.com/datadog_flutter")
-      channel.setMethodCallHandler(DatadogFlutterPlugin())
-    }
+    var channel = MethodChannel(flutterPluginBinding.binaryMessenger, "plugins.greenbits.com/datadog_flutter")
+    channel.setMethodCallHandler(this);
+    context = flutterPluginBinding.applicationContext
   }
 
   override fun onMethodCall(@NonNull call: MethodCall, @NonNull result: Result) {
